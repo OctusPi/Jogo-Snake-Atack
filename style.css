@@ -2,6 +2,11 @@
     font-family: 'press-start';
     src: url(press-start.ttf);
 }
+@keyframes pisca {
+    0% { opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
 
 *{
     font-family: 'press-start', 'Courier New', Courier, monospace;
@@ -44,6 +49,16 @@ main{
     background-color:sandybrown;
     border: 4px solid black;
     margin-bottom: 20px;
+    position: relative;
+}
+
+#player{
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 10px;
+    left: 10px;
+    background-color: black;
 }
 
 #controls{
@@ -67,6 +82,14 @@ main{
 .center-cross{
     display: flex;
     flex-direction: row;
+}
+
+.pisca{
+    -webkit-animation: pisca .5s linear infinite;
+    -moz-animation: pisca .5s linear infinite;
+    -ms-animation: pisca .5s linear infinite;
+    -o-animation: pisca .5s linear infinite;
+    animation: pisca .5s linear infinite;
 }
 
 @media (max-width:550px){
