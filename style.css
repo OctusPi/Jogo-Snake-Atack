@@ -1,0 +1,77 @@
+@font-face {
+    font-family: 'press-start';
+    src: url(press-start.ttf);
+}
+
+*{
+    font-family: 'press-start', 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body{
+    height: 100%;
+    background-color:skyblue;
+}
+
+main{
+    width: 500px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#title{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.title-game{
+    font-size: 1.2rem;
+}
+
+.score{
+    font-size: 0.8rem;
+}
+
+#board{
+    width: 100%;
+    height: 400px;
+    background-color:sandybrown;
+    border: 4px solid black;
+    margin-bottom: 20px;
+}
+
+#controls{
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+#controls button{
+    width: 25%;
+    height: 60px;
+}
+
+#controls button i{
+    font-size: 1.5rem;
+}
+
+.ctrl-up, .ctrl-down{
+    display: block;
+}
+
+.center-cross{
+    display: flex;
+    flex-direction: row;
+}
+
+@media (max-width:550px){
+    main{
+        width: 100%;
+        padding: 10px;
+    }
+}
