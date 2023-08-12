@@ -92,6 +92,17 @@ main{
     animation: pisca .5s linear infinite;
 }
 
+.food{
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: black;
+}
+
+.food-bonus{
+    background-color: tomato;
+}
+
 @media (max-width:550px){
     main{
         width: 100%;
