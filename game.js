@@ -82,6 +82,19 @@ function movePlayer(){
     }
 }
 
+function addFood(){
+    let positionX = Math.floor(Math.random() * (board.offsetWidth - 15))
+    let positionY = Math.floor(Math.random() * (board.offsetHeight - 15))
+    const food    = document.createElement('div')
+    
+    food.classList.add('food', 'pisca')
+    food.style.top = positionY+'px'
+    food.style.left = positionX+'px'
+
+    board.appendChild(food)
+}
+
+addFood()
 keyControls()
 btnControls()
 movePlayer()
