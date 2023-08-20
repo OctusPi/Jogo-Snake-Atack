@@ -1,6 +1,9 @@
-let state      = true
+let state = true
+let velox = 0.6;
+
 const board    = document.getElementById('board')
 const player   = document.getElementById('player')
+const snake    = [...document.querySelectorAll('.body-snake')]
 const controls = [...document.querySelectorAll('.btn-ctrl')]
 const movedir  = {x: 1, y:0}
 
@@ -68,30 +71,55 @@ function movePlayer(){
                 let moveY = parseInt(positionY + (movedir.y))
                 let moveX = parseInt(positionX + (movedir.x))
 
-                if((moveY > -1 && moveY < (parseInt(board.offsetHeight) - 15)) && (moveX > -1 && moveX < (parseInt(board.offsetWidth) - 15))){
+                if ((moveY > -1 && moveY < (parseInt(board.offsetHeight) - 15))
+                &&  (moveX > -1 && moveX < (parseInt(board.offsetWidth) - 15))) {
                     player.style.top  = parseInt(moveY)+'px'
                     player.style.left = parseInt(moveX)+'px'
                 }else{
                     state = false
+                    player.classList.remove('pisca')
                 }
 
                 console.log(`X: ${movedir.x} Y: ${movedir.y}`)
             }
-        }, 10);
+        }, parseInt(velox*30));
 
     }
 }
 
-function addFood(){
+function addFood() {
+    
     let positionX = Math.floor(Math.random() * (board.offsetWidth - 15))
     let positionY = Math.floor(Math.random() * (board.offsetHeight - 15))
     const food    = document.createElement('div')
     
     food.classList.add('food', 'pisca')
     food.style.top = positionY+'px'
-    food.style.left = positionX+'px'
+    food.style.left = positionX + 'px'
+    
+    if (!snake) {
+        board.appendChild(food)
+    } else {
+        let colision = false
+        snake.forEach(s => {
+            let rect = s.getBoundingClientRect()
+            if (!(
+                rect.left < positionX &&
+                rect.right < positionX+10 &&
+                rect.top < positionY &&
+                rect.bottom > positionY+10
+            )) {
+                colision = true
+                return
+            }
+        })
 
-    board.appendChild(food)
+        if (!colision) {
+            board.appendChild(food)
+        } else {
+            addFood()
+        }
+    }
 }
 
 addFood()

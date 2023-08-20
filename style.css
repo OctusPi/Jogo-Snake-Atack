@@ -52,7 +52,7 @@ main{
     position: relative;
 }
 
-#player{
+#player, .body-snake{
     position: absolute;
     width: 10px;
     height: 10px;
