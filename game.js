@@ -1,128 +1,150 @@
-let state = true
-let velox = 0.6;
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-const board    = document.getElementById('board')
-const player   = document.getElementById('player')
-const snake    = [...document.querySelectorAll('.body-snake')]
-const controls = [...document.querySelectorAll('.btn-ctrl')]
-const movedir  = {x: 1, y:0}
+const scale = 10;
+const rows = canvas.height / scale;
+const columns = canvas.width / scale;
 
-function keyControls(){
-    window.addEventListener('keyup', e => {
-        switch (e.key) {
-            case 'ArrowLeft':
-                movedir.x = -1
-                movedir.y = 0
-                break;
-            case 'ArrowUp':
-                movedir.x = 0
-                movedir.y = -1
-                break;
-            case 'ArrowRight':
-                movedir.x = 1
-                movedir.y = 0
-                break;
-            case 'ArrowDown':
-                movedir.x = 0
-                movedir.y = 1
-                break;
+let snake;
+let food;
+
+window.addEventListener('keydown', e => {
+    const direction = e.key.replace('Arrow', '');
+    snake.changeDirection(direction);
+});
+
+(function setup() {
+    canvas.width = 400;
+    canvas.height = 400;
+    
+    snake = new Snake();
+    food = new Food();
+    food.pickLocation();
+
+    window.setInterval(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        food.draw();
+        snake.update();
+        snake.draw();
+
+        if (snake.eat(food)) {
+            food.pickLocation();
         }
-    })
-}
 
-function btnControls(){
-    if(controls){
-        controls.forEach(btn => {
-            btn.addEventListener('click', e => {
-                switch (e.target.id) {
-                    case 'left':
-                        movedir.x = -1
-                        movedir.y = 0
-                        break;
-                    case 'up':
-                        movedir.x = 0
-                        movedir.y = -1
-                        break;
-                    case 'right':
-                        movedir.x = 1
-                        movedir.y = 0
-                        break;
-                    default:
-                        movedir.x = 0
-                        movedir.y = 1
-                        break;
-                }
+        snake.checkCollision();
+        document.querySelector('h1').innerText = 'Jogo da Cobrinha - Pontos: ' + snake.total;
+    }, 200);
+}());
 
-                console.log(e.target.id)
-            })
-        })
-    }
-}
+function Snake() {
+    this.x = 0;
+    this.y = 0;
+    this.xSpeed = scale * 1;
+    this.ySpeed = 0;
+    this.total = 0;
+    this.tail = [];
 
-function movePlayer(){
-    if(player && board){
+    this.draw = function() {
+        //define snake color
+        ctx.fillStyle = "#0000FF";
+        
+        //draw snake head
+        ctx.fillRect(this.x, this.y, scale, scale);
 
-        setInterval(() => {
-            if(state){
-
-                let positionY  = player.offsetTop
-                let positionX  = player.offsetLeft
-
-                let moveY = parseInt(positionY + (movedir.y))
-                let moveX = parseInt(positionX + (movedir.x))
-
-                if ((moveY > -1 && moveY < (parseInt(board.offsetHeight) - 15))
-                &&  (moveX > -1 && moveX < (parseInt(board.offsetWidth) - 15))) {
-                    player.style.top  = parseInt(moveY)+'px'
-                    player.style.left = parseInt(moveX)+'px'
-                }else{
-                    state = false
-                    player.classList.remove('pisca')
-                }
-
-                console.log(`X: ${movedir.x} Y: ${movedir.y}`)
-            }
-        }, parseInt(velox*30));
+        //draw snake tail
+        for (let i = 0; i < this.tail.length; i++) {
+            ctx.fillRect(this.tail[i].x, this.tail[i].y, scale, scale);
+        }
 
     }
-}
 
-function addFood() {
-    
-    let positionX = Math.floor(Math.random() * (board.offsetWidth - 15))
-    let positionY = Math.floor(Math.random() * (board.offsetHeight - 15))
-    const food    = document.createElement('div')
-    
-    food.classList.add('food', 'pisca')
-    food.style.top = positionY+'px'
-    food.style.left = positionX + 'px'
-    
-    if (!snake) {
-        board.appendChild(food)
-    } else {
-        let colision = false
-        snake.forEach(s => {
-            let rect = s.getBoundingClientRect()
-            if (!(
-                rect.left < positionX &&
-                rect.right < positionX+10 &&
-                rect.top < positionY &&
-                rect.bottom > positionY+10
-            )) {
-                colision = true
-                return
-            }
-        })
+    this.update = function() {
+        
+        for (let i = 0; i < this.tail.length - 1; i++) {
+            this.tail[i] = this.tail[i + 1];
+        }
 
-        if (!colision) {
-            board.appendChild(food)
-        } else {
-            addFood()
+        this.tail[this.total - 1] = { x: this.x, y: this.y };
+
+        this.x += this.xSpeed;
+        this.y += this.ySpeed;
+
+        if (this.x >= canvas.width) {
+            this.x = 0;
+        }
+
+        if (this.y >= canvas.height) {
+            this.y = 0;
+        }
+
+        if (this.x < 0) {
+            this.x = canvas.width - scale;
+        }
+
+        if (this.y < 0) {
+            this.y = canvas.height - scale;
         }
     }
+
+    this.changeDirection = function(direction) {
+        switch (direction) {
+            case 'Up':
+                if (this.ySpeed === 0) {
+                    this.xSpeed = 0;
+                    this.ySpeed = -scale * 1;
+                }
+                break;
+            case 'Down':
+                if (this.ySpeed === 0) {
+                    this.xSpeed = 0;
+                    this.ySpeed = scale * 1;
+                }
+                break;
+            case 'Left':
+                if (this.xSpeed === 0) {
+                    this.xSpeed = -scale * 1;
+                    this.ySpeed = 0;
+                }
+                break;
+            case 'Right':
+                if (this.xSpeed === 0) {
+                    this.xSpeed = scale * 1;
+                    this.ySpeed = 0;
+                }
+                break;
+        }
+    }
+
+    this.eat = function(food) {
+        if (this.x === food.x && this.y === food.y) {
+            this.total++;
+            return true;
+        }
+
+        return false;
+    }
+
+    this.checkCollision = function() {
+        for (let i = 0; i < this.tail.length; i++) {
+            if (this.x === this.tail[i].x && this.y === this.tail[i].y) {
+                this.total = 0;
+                this.tail = [];
+            }
+        }
+    }
 }
 
-addFood()
-keyControls()
-btnControls()
-movePlayer()
+function Food() {
+    this.x;
+    this.y;
+
+    this.pickLocation = function() {
+        this.x = Math.floor(Math.random() * rows) * scale;
+        this.y = Math.floor(Math.random() * columns) * scale;
+    }
+
+    this.draw = function() {
+        ctx.fillStyle = "#f44336";
+        ctx.fillRect(this.x, this.y, scale, scale);
+    }
+}
