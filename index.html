@@ -4,11 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo da Cobrinha</title>
+    <link rel="icon" type="image/png" href="assets/app_icon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <img src="assets/app_icon.png">
     <h1>Jogo da Cobrinha</h1>
+
     <canvas id="gameCanvas"></canvas>
+
+    <div class="controls">
+        <button class="btn_control bi bi-arrow-up" value="Up"></button>
+        <div>
+            <button class="btn_control bi bi-arrow-left" value="Left"></button>
+            <button class="btn_control bi bi-arrow-right" value="Right"></button>
+        </div>
+        <button class="btn_control bi bi-arrow-down" value="Down"></button>
+    </div>
+
     <script src="game.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 const canvas = document.getElementById("gameCanvas");
+const controls = document.querySelectorAll('.btn_control')
 const ctx = canvas.getContext("2d");
 
 const scale = 10;
@@ -8,45 +9,17 @@ const columns = canvas.width / scale;
 let snake;
 let food;
 
-window.addEventListener('keydown', e => {
-    const direction = e.key.replace('Arrow', '');
-    snake.changeDirection(direction);
-});
-
-(function setup() {
-    canvas.width = 400;
-    canvas.height = 400;
-    
-    snake = new Snake();
-    food = new Food();
-    food.pickLocation();
-
-    window.setInterval(() => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        food.draw();
-        snake.update();
-        snake.draw();
-
-        if (snake.eat(food)) {
-            food.pickLocation();
-        }
-
-        snake.checkCollision();
-        document.querySelector('h1').innerText = 'Jogo da Cobrinha - Pontos: ' + snake.total;
-    }, 200);
-}());
-
 function Snake() {
     this.x = 0;
     this.y = 0;
     this.xSpeed = scale * 1;
     this.ySpeed = 0;
-    this.total = 0;
-    this.tail = [];
+    this.total  = 0;
+    this.tail   = [];
 
     this.draw = function() {
         //define snake color
-        ctx.fillStyle = "#0000FF";
+        ctx.fillStyle = "#AA33AA";
         
         //draw snake head
         ctx.fillRect(this.x, this.y, scale, scale);
@@ -148,3 +121,46 @@ function Food() {
         ctx.fillRect(this.x, this.y, scale, scale);
     }
 }
+
+function start() {
+    canvas.width = 340;
+    canvas.height = 340;
+    
+    snake = new Snake();
+    food = new Food();
+    food.pickLocation();
+
+    window.setInterval(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        food.draw();
+        snake.update();
+        snake.draw();
+
+        if (snake.eat(food)) {
+            food.pickLocation();
+        }
+
+        snake.checkCollision();
+        document.querySelector('h1').innerText = 'Pontos: ' + snake.total;
+    }, 200);
+};
+
+// controle por setas do teclado
+window.addEventListener('keydown', e => {
+    const direction = e.key.replace('Arrow', '');
+    snake.changeDirection(direction);
+});
+
+// controle por btns ui
+controls.forEach(btn => {
+    btn.addEventListener('click', e => {
+        const direction = e.target.value
+        snake.changeDirection(direction)
+    })
+})
+
+start()
+
+
+
+
